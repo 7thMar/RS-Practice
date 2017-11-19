@@ -10,7 +10,7 @@
 >
 > [LongTail.py](https://github.com/7thMar/RS-Practice/blob/master/2-User-Behavior-Data/LongTail.py)
 
-- **物品流行度 ** 的长尾分布
+- **物品流行度** 的长尾分布
 - **用户活跃度**  的长尾分布
 - **MovieLens** 数据集中用户活跃度和物品流行度的关系
 
