@@ -1,18 +1,12 @@
-# Recommender System Practice
-
-[TOC]
+<h1 id='top'>推荐系统实践</h1>
 
 -----
 
-### 长尾分布
-
-> MovieLens 1K 数据集
->
-> [LongTail.py](https://github.com/7thMar/RS-Practice/blob/master/2-User-Behavior-Data/LongTail.py)
-
-- **物品流行度** 的长尾分布
-- **用户活跃度**  的长尾分布
-- **MovieLens** 数据集中用户活跃度和物品流行度的关系
+- [推荐系统实践文档](https://github.com/7thMar/RS-Practice/blob/master/RS-Practice.md#top)
+  - [利用用户行为数据](https://github.com/7thMar/RS-Practice/blob/master/RS-Practice.md#2)
+    - [长尾分布](https://github.com/7thMar/RS-Practice/blob/master/RS-Practice.md#2-long-tail)
+    - [基于用户的协同过滤算法](https://github.com/7thMar/RS-Practice/blob/master/RS-Practice.md#2-usercf)
+    - [基于物品的协同过滤算法](https://github.com/7thMar/RS-Practice/blob/master/RS-Practice.md#2-itemcf)
+    - [UserCF & ItemCF 对比](https://github.com/7thMar/RS-Practice/blob/master/RS-Practice.md#2-usercf-itemcf)
 
 
-![Long Tail](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/LongTail.png)
