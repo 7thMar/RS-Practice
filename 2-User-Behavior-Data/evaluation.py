@@ -28,9 +28,7 @@ def readData(path, sep=','):
 def SplitData(data, M, seed):
     test = {}
     train = {}
-
     # { userID: [item list][rating list] }
-    # 64s -> 8s
     count = data.shape[0]  # 数据总数
     np.random.seed(seed)
     index = np.arange(count)
@@ -50,24 +48,10 @@ def SplitData(data, M, seed):
     return train, test
 
 
-# 召回率
 # N: 物品数目
 # train: {user: item, }
 # 和推荐数目N有很大的关系
-def Recall(train, test, K, W, N):
-    hit = 0
-    num = 0
-    for user in train:
-        tu = test[user]
-        rank = GetRecommendation(user, N)
-        for item, pui in rank:  # pui 预测评分
-            if item in tu:
-                hit += 1
-        num += len(tu)
-    return hit / (num * 1.0)
-
-
-# 准确率
+# 准确率 召回率 覆盖率 流行度
 def PrecisionAndRecallAndCoverageAndPopularity(train, test, item_popularity, K, W, N, method=1):
     hit = 0
     num_rank = 0
@@ -121,17 +105,6 @@ def PrecisionAndRecallAndCoverageAndPopularity(train, test, item_popularity, K, 
             num_tu * 1.0), len(recommend_items) / (len(all_items) * 1.0), popularity / (num_rank * 1.0)
 
 
-# 覆盖率
-def Converage(train, test, N):
-    recommend_items = set()
-    all_items = set()
-    for user in train:
-        all_items = all_items | set(train[user][0])
-        rank = GetRecommendation(user, N)
-        recommend_items = recommend_items | set(rank)
-    return len(recommend_items) / (len(all_items) * 1.0)
-
-
 # 获取商品的流行度
 def ItemsPopularity(data, M, seed):
     count = data.shape[0]  # 数据总数
@@ -146,24 +119,62 @@ def ItemsPopularity(data, M, seed):
     return item_popularity
 
 
-# 新颖度
-#  def Popularity(train, test, N):
-    #  item_popularity = dict()
-    #  for user, items in train.items():
-        #  for item in items.keys():
-            #  if item not in item_popularity:
-                #  item_popularity[item] = 0
-            #  item_popularity[item] += 1
-    #  ret = 0
-    #  n = 0
-    #  for user in train.keys():
-        #  ru = GetRecommendation(user, N)
-        #  for item, pui in ru:
-            #  ret += math.log(1 + item_popularity[item])
-            #  n += 1
-    #  ret /= n * 1.0
-    #  return ret
+def MostPopularResult(train, test, item_popularity, N):
+    hit = 0
+    num_rank = 0
+    num_tu = 0
+    recommend_items = set()
+    all_items = set()
+    popularity = 0.0
+    popularity_order = sorted(item_popularity.items(), key=lambda d: d[1], reverse=True)
+    for user in train:  # test / train
+        if user not in test:
+            continue
+        all_items = all_items | set(train[user][0])
+        tu = test[user][0]
+        n = 0
+        for item, _ in popularity_order:
+            if item in train[user][0]:
+                continue
+            if item in tu:
+                hit += 1
+            popularity += math.log(1 + item_popularity[item])
+            recommend_items.add(item)
+            n += 1
+            if n == N:
+                break
+        num_rank += N
+        num_tu += len(tu)
+    return hit / (num_rank * 1.0), hit / (
+        num_tu * 1.0), len(recommend_items) / (len(all_items) * 1.0), popularity / (num_rank * 1.0)
 
 
-def GetRecommendation(user, N):
-    pass
+def RandomResult(train, test, item_popularity, N):
+    hit = 0
+    num_rank = 0
+    num_tu = 0
+    recommend_items = set()
+    all_items = set()
+    popularity = 0.0
+    for user in train:  # test / train
+        if user not in test:
+            continue
+        all_items = all_items | set(train[user][0])
+    all_items = list(all_items)
+    for user in test:
+        tu = test[user][0]
+        n = 0
+        while n < N:
+            item = all_items[np.random.randint(len(all_items))]
+            if item in train[user][0]:
+                continue
+            if item in tu:
+                hit += 1
+            recommend_items.add(item)
+            popularity += math.log(1 + item_popularity[item])
+
+            n += 1
+        num_rank += N
+        num_tu += len(tu)
+    return hit / (num_rank * 1.0), hit / (
+        num_tu * 1.0), len(recommend_items) / (len(all_items) * 1.0), popularity / (num_rank * 1.0)

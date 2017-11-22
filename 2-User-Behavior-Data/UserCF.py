@@ -23,7 +23,7 @@ def fn_timer(func):
 
 
 #  @fn_timer
-def UserSimilarity(train):
+def UserSimilarityVersion1(train):
     W = dict()
     for u in train:
         W[u] = dict()
@@ -40,10 +40,10 @@ def UserSimilarityVersion2(train):
     item_users = dict()
     #  商品: 用户
     for u, items in train.items():
-        for i in items:
-            if i[0] not in item_users:
-                item_users[i[0]] = set()
-            item_users[i[0]].add(u)
+        for i in items[0]:
+            if i not in item_users:
+                item_users[i] = set()
+            item_users[i].add(u)
 
     C = dict()
     N = dict()
@@ -68,7 +68,7 @@ def UserSimilarityVersion2(train):
         for v, cuv in related_users.items():
             W[u][v] = cuv / math.sqrt(N[u] * N[v])
 
-    return W
+    return pd.DataFrame(W)
 
 
 def UserSimilarityVersion3(train):
