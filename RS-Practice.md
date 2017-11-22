@@ -18,7 +18,9 @@
 
 >  [LongTail.py](https://github.com/7thMar/RS-Practice/blob/master/2-User-Behavior-Data/LongTail.py)
 
-![LongTail](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/LongTail.png)
+
+![LongTail](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/LongTail-Line.png)
+
 
 ---
 
@@ -66,15 +68,21 @@
     K = [5, 10, 20, 40, 80, 120, 160]
     ```
   - **Random-MostPopular**
+  
     ![Random-MostPopular](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/Random-MostPopular-Table.png)
 
   - **UserCF**
+  
     ![UserCF-Table](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/UserCF-Table.png)
+    
     ![UserCF-Line](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/UserCF-Line.png)
 
   - **UserCF I and II**
+  
     ![UserCF-I-II-Table](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/UserCF-I-II-Table.png)
+    
     ![UserCF-I-II-Line](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/UserCF-I-II-Line.png)
+    
 ---
 
 <h3 id='2-itemcf'>基于物品的协同过滤算法</h3>
