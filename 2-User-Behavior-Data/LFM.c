@@ -1,17 +1,6 @@
 #include <stdio.h>
 #include <malloc.h>
 
-struct UserItems {
-    int id;
-    int *values;
-};
-
-struct PQ {
-    int id;
-    float *values;
-};
-
-
 void UpdatePQPositive(float *P, float *Q, int F, float alpha, float namda) {
     float s = 0;
     float eui = 0;
@@ -36,58 +25,36 @@ void UpdatePQNegative(float *P, float *Q, int F, float alpha, float namda) {
         Q[i] += alpha * (eui * P[i] - namda * Q[i]);
     }
 }
-
-void UpdatePQAll(int **positive, int **negative, float **P, float **Q, int userNum, int *itemList, int F, float alpha, float namda) {
-    float *p;  // P[user index]
-    float *q;  // Q[item index]
-    float s = 0;  // 求和
-    float eui = 0;
-    int *posi; // positive[user index]
-    int *nega; // negative[user index]
-    for (int i = 0; i < userNum; ++i) {
-        p = P[i];
-        posi = positive[i];
-        while (*posi) {
-            int item = *(posi++);
-            int item_index = 0;
-            while (1) {
-                if (item == itemList[item_index])
-                    break;
-                ++item_index;
+int SelectNegativeSample(int *items_pool, int *items_index, int *positive, int *negative, int sample_length) {
+    int item = 0; // 当前挑选的item
+    int num = 0; // 挑选的数目
+    int n = 0; //
+    for (int i = 0; i < 3 * sample_length; ++i) {
+        item = items_pool[items_index[i]];
+        n = 0;
+        while (positive[n]) {
+            if (positive[n] == item) {
+                break;
             }
-            q = Q[item_index];
-            s = 0;
-            eui = 0;
-            for (int j = 0; j < F; ++j) {
-                s += (p[j] * q[j]);
-            }
-            eui = 1 - s;
-            for (int j = 0; j < F; ++j) {
-                p[j] += alpha * (eui * q[j] - namda * p[j]);
-                q[j] += alpha * (eui * p[j] - namda * q[j]);
-            }
+            ++n;
         }
-        nega = negative[i];
-        while (*nega) {
-            int item = *(nega++);
-            int item_index = 0;
-            while (1) {
-                if (item == itemList[item_index])
-                    break;
-                ++item_index;
+        if (positive[n]) {
+            continue;
+        }
+        n = 0;
+        while (negative[n]) {
+            if (negative[n] == item) {
+                break;
             }
-            q = Q[item_index];
-            s = 0;
-            eui = 0;
-            for (int j = 0; j < F; ++j) {
-                s += (p[j] * q[j]);
-            }
-            eui = 0 - s;
-            for (int j = 0; j < F; ++j) {
-                p[j] += alpha * (eui * q[j] - namda * p[j]);
-                q[j] += alpha * (eui * p[j] - namda * q[j]);
-            }
+            ++n;
+        }
+        if (negative[n]) {
+            continue;
+        }
+        negative[num++] = item;
+        if (num == sample_length) {
+            break;
         }
     }
+    return num;
 }
-
