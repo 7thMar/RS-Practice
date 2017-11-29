@@ -1,14 +1,33 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+File: ItemCF.py
+Author: K
+Email: 7thmar37@gmail.com
+Github: https://github.com/7thmar
+Description: ItemCF
+"""
+
 import math
 import numpy as np
 import pandas as pd
 import time
 
 
-# [[], []] N * N
 def ItemSimilarityVersion1(train, N, items_user):
+    """ ItemCF 算法 计算物品相似度
+
+    Desc:
+
+
+    Args:
+
+
+    Returns:
+
+
+    """
     start = time.time()
     items_list = list(items_user.keys())
     W = dict()
@@ -30,6 +49,18 @@ def ItemSimilarityVersion1(train, N, items_user):
 
 
 def ItemSimilarityVersion2(train, N, items_user):
+    """ ItemCF IUF 计算物品相似度
+
+    Desc:
+
+
+    Args:
+
+
+    Returns:
+
+
+    """
     start = time.time()
 
     items_list = list(items_user.keys())
@@ -61,6 +92,18 @@ def ItemSimilarityVersion2(train, N, items_user):
 
 
 def ItemSimilarityNorm(train, N, items_user):
+    """ ItemCF Norm 计算物品相似度
+
+    Desc:
+
+
+    Args:
+
+
+    Returns:
+
+
+    """
     start = time.time()
     items_list = list(items_user.keys())
     W = dict()

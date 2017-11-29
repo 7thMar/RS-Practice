@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+File: ItemCF_main.py
+Author: K
+Email: 7thmar37@gmail.com
+Github: https://github.com/7thmar
+Description: ItemCF Test
+"""
+
 # Create By K
 from multiprocessing import Process, Queue, Pool
 import math
@@ -23,9 +31,27 @@ matplotlib.rcParams['axes.unicode_minus'] = False
 
 # 分成训练集和测试集
 def SplitData(data, M, seed):
+    """ 分成训练集和测试集
+
+    Desc:
+
+
+    Args:
+        data: Read Data
+        M: 分组数
+        seed: 随机数种子
+
+    Returns:
+        train: 训练集
+            dict(userid, [MovieID], [Rating])
+        test: 测试集
+        train_items_list: 商品列表（唯一）
+        item_popularity: 商品流行度
+        items_user: 对某物品产生过行为的用户列表
+
+    """
     test = {}
     train = {}
-    # { userID: [item list][rating list] }
     count = data.shape[0]  # 数据总数
     np.random.seed(seed)
     index = np.arange(count)
@@ -37,7 +63,6 @@ def SplitData(data, M, seed):
     train_items_list = data_train['MovieID'].value_counts().index.tolist()
     d_items_user = data_train.groupby("MovieID")["UserID"]
     item_popularity = d_items_user.count().to_dict()
-    #  item_popularity = data_train.groupby("MovieID")["UserID"].count().to_dict()
 
     items_user = dict()
     for k, v in d_items_user:
@@ -54,11 +79,28 @@ def SplitData(data, M, seed):
     return train, test, train_items_list, item_popularity, items_user
 
 
-# N: 物品数目
-# train: {user: item, }
-# 和推荐数目N有很大的关系
-# 准确率 召回率 覆盖率 流行度
 def PrecisionAndRecallAndCoverageAndPopularity(train, test, item_popularity, K, W, N, method):
+    """ 计算 准确率，召回率，覆盖率，流行度
+
+    Desc:
+
+
+    Args:
+        train
+        test
+        item_popularity
+        K: 取相似度前K个
+        W: 相似度矩阵
+        N: TopN
+        method: recommend 推荐方法
+
+    Returns:
+        precision: 准确率
+        recall: 召回率
+        coverage: 覆盖率
+        popularity: 流行度
+
+    """
     hit = 0
     num_rank = 0
     num_tu = 0
@@ -88,6 +130,26 @@ def PrecisionAndRecallAndCoverageAndPopularity(train, test, item_popularity, K, 
 
 
 def Evaluation(k, train, test, item_popularity, W, N, method=1):
+    """ 进程，评测
+
+    Desc:
+
+
+    Args:
+        k: 当前k值
+        train: 训练集
+        test: 测试集
+        item_popularity: 物品流行度
+        W
+        N
+
+    Returns:
+        precision
+        recall
+        coverage
+        popularity
+
+    """
     print('Process to k: %d' % k)
     start = time.time()
     precision, recall, coverage, popularity = PrecisionAndRecallAndCoverageAndPopularity(
@@ -143,17 +205,26 @@ def PrintMovieSimilarity():
 
 
 def TestItemCF():
+    """ 测试 ItemCF 算法
+
+    Desc:
+
+
+    Args:
+
+
+    Returns:
+
+
+    """
     start = time.time()
     path = '~/file/rs/dataset/ml-1m/ratingsTest.dat'
     d_file = pd.read_csv(path, sep='::', usecols=[0, 1, 2])
     M = 8  # 分组数
     N = 10  # 推荐个数
-    K = [5]
-    #  K = [5, 10, 20, 40]
-    #  K = [5, 10, 20, 40, 80, 120, 160]
+    K = [5, 10, 20, 40, 80, 120, 160]
     train, test, train_items_list, item_popularity, items_user = SplitData(d_file, M, 1)  # 0: seed
-    #  w_item = ItemCF.ItemSimilarityVersion1(train, item_popularity, items_user)
-    w_item = ItemCF.ItemSimilarityVersion2(train, item_popularity, items_user)
+    w_item = ItemCF.ItemSimilarityVersion1(train, item_popularity, items_user)
     columns_list = [
         'precision', 'recall', 'coverage', 'popularity'
     ]
@@ -170,8 +241,7 @@ def TestItemCF():
     end = time.time()
     print('total time: %.2fs' % (end - start))
 
-    d.to_excel('Test.xlsx', 'ItemCF-K')
-    #  d.to_excel('Result-ItemCF-K.xlsx', 'ItemCF-K')
+    d.to_excel('Result-ItemCF-K.xlsx', 'ItemCF-K')
     fig, axes = plt.subplots(2, 2)
     axes[0][0].set_title('Precision')
     axes[0][0].plot(d.iloc[:, 0], 'o-', label='precision')
@@ -186,18 +256,27 @@ def TestItemCF():
 
 
 def TestItemCF_IUF():
+    """ 对比 ItemCF 和 ItemCF-IUF
+
+    Desc:
+
+
+    Args:
+
+
+    Returns:
+
+
+    """
     file_path = '~/file/rs/dataset/ml-1m/ratings.dat'
     d_file = eva.readData(file_path, '::')
     M = 8  # 分组数
     N = 10  # 推荐个数
     K = [5, 10, 20, 40, 80, 120, 160]
-    #  K = [5, 10, 20, 40]
     train, test, train_items_list, item_popularity, items_user = SplitData(d_file, M, 0)  # 0: seed
     p = Pool(4)
     W_ItemCF = p.apply_async(ItemCF.ItemSimilarityVersion1, args=(train, item_popularity, items_user)).get()
     W_IUF = p.apply_async(ItemCF.ItemSimilarityVersion2, args=(train, item_popularity, items_user)).get()
-    #  W_ItemCF = ItemCF.ItemSimilarityVersion1(train)
-    #  W_IUF = ItemCF.ItemSimilarityVersion2(train)
     p.close()
     p.join()
     columns_list = [
@@ -243,12 +322,23 @@ def TestItemCF_IUF():
 
 
 def TestItemCF_Norm():
+    """ 对比 ItemCF 和 ItemCF-Norm
+
+    Desc:
+
+
+    Args:
+
+
+    Returns:
+
+
+    """
     file_path = '~/file/rs/dataset/ml-1m/ratings.dat'
     start = time.time()
     d_file = eva.readData(file_path, '::')
     M = 8  # 分组数
     N = 10  # 推荐个数
-    #  K = [10]
     K = [5, 10, 20, 40, 80, 120, 160]
     train, test, train_items_list, item_popularity, items_user = SplitData(d_file, M, 0)  # 0: seed
     W_ItemCF = ItemCF.ItemSimilarityVersion1(train, item_popularity, items_user)
@@ -300,6 +390,18 @@ def TestItemCF_Norm():
 
 # 测试原版推荐算法和新版推荐算法
 def test_recommend():
+    """ 对比原版推荐算法和改进后的推荐算法
+
+    Desc:
+
+
+    Args:
+
+
+    Returns:
+
+
+    """
     file_path = '~/file/rs/dataset/ml-1m/ratings.dat'
     d_file = eva.readData(file_path, '::')
     M = 8  # 分组数
@@ -349,10 +451,6 @@ def test_recommend():
     d.iloc[:, 6:8].plot(ax=axes[1][1], style=['o-', 'o-'])
     plt.legend()
     plt.show()
-
-
-def main():
-    pass
 
 
 if __name__ == '__main__':
