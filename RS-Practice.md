@@ -21,7 +21,6 @@
 
 ![LongTail](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/LongTail-Line.png)
 
-
 ---
 
 <h3 id='2-usercf'>基于用户的协同过滤算法</h3>
@@ -48,6 +47,8 @@
 
 
 
+
+
   > $w_{uv}$: 用户 u 和 v 的相似度
   > $r_{vi}$: 用户 v 对 物品 i 的兴趣(评分)
 
@@ -68,38 +69,44 @@
     K = [5, 10, 20, 40, 80, 120, 160]
     ```
   - **Random-MostPopular**
-  
+
     ![Random-MostPopular](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/Random-MostPopular-Table.png)
 
   - **UserCF**
-  
+
     ![UserCF-Table](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/UserCF-Table.png)
-    
+
     ![UserCF-Line](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/UserCF-Line.png)
 
   - **UserCF I and II**
-  
+
     ![UserCF-I-II-Table](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/UserCF-I-II-Table.png)
-    
+
     ![UserCF-I-II-Line](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/UserCF-I-II-Line.png)
-    
+
 ---
 
 <h3 id='2-itemcf'>基于物品的协同过滤算法</h3>
 
 > [ItemCF.py](https://github.com/7thMar/RS-Practice/blob/master/2-User-Behavior-Data/ItemCF.py)
+> [ItemCF_main.py](https://github.com/7thMar/RS-Practice/blob/master/2-User-Behavior-Data/ItemCF_main.py)
 
 - 物品相似度
     $$
     w_{ij} = \frac {\vert N(i) \cap N(j) \vert} {\sqrt {\vert N(i) \cap N(j) \vert}}
     $$
 
+- 物品相似度实例
+
+![Movie-1](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/ItemCF-Movie-1.png)
+
+![Movie-2](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/ItemCF-Movie-2.png)
+
 - 用户 *u* 对物品 *j* 的兴趣
 
     $$
     p_{uj} = \sum_{i \in N(u) \cap S(j, K)} {w_{ji}r_{ui}}
     $$
-
 
 
   > $w_{ji}$: 物品 j 和 i 的相似度
@@ -114,7 +121,25 @@
     K = [5, 10, 20, 40, 80, 120, 160]
     ```
 
-  ![ItemCF](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/ItemCF.png)
+  ![ItemCF](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/ItemCF-Table.png)
+
+  ![ItemCF](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/ItemCF-Line.png)
+
+- IUF: 活跃用户对物品相似度的贡献应该小于不活跃的用户
+
+  $$
+  w_{ij} = \frac {\sum_{u \in N(i) \cap N(j)} \frac 1 {\log (1 + \vert N(u) \vert)}} {\sqrt {\vert N(i) \cap N(j) \vert}}
+  $$
+
+  ![IUF](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/ItemCF-IUF-Table.png)
+
+  ![IUF](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/ItemCF-IUF-Line.png)
+
+- 物品相似度归一化
+
+  ![Norm](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/ItemCF-Norm-Table.png)
+
+  ![Norm](https://github.com/7thMar/RS-Practice/raw/master/2-User-Behavior-Data/image/ItemCF-Norm-Line.png)
 
 ---
 
