@@ -3,11 +3,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Test Python
-test.py
+# Test
+test.*
 
 # Excel
 *.xlsx
+*.csv
+*.dat
 
 # C extensions
 *.so
